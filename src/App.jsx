@@ -456,7 +456,7 @@ export default function App() {
       
       {/* Footer */}
       <footer className="text-center p-4 text-xs sm:text-sm text-orange-800 font-medium opacity-80 z-10 mb-16 sm:mb-8 px-4">
-        <p>A web-based gamification that strangers will ponder about for centuries. All thanks to Chick.</p>
+        <p>THE BEST Pie you'll ever try. All thanks to Chick.</p>
       </footer>
 
       {/* C4 Discrete & Romantic Button */}
