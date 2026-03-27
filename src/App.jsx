@@ -496,13 +496,12 @@ export default function App() {
             </h2>
             
             {/* Pepperoni Button */}
-            <button 
-              onClick={() => {
-                alert('Proceeding to C4 Development Center...');
-                setShowC4Modal(false);
-              }}
-              className="w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center p-4 transform hover:scale-110 transition-all relative overflow-hidden group rounded-full shadow-[0_0_80px_rgba(220,38,38,0.6)]"
-            >
+<button 
+  onClick={() => {
+    window.location.href = 'https://patrick-lake.vercel.app';
+  }}
+  className="w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center p-4 transform hover:scale-110 transition-all relative overflow-hidden group rounded-full shadow-[0_0_80px_rgba(220,38,38,0.6)]"
+>
               <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-2xl">
                 {/* Meat base */}
                 <circle cx="50" cy="50" r="48" fill="#991b1b" stroke="#7f1d1d" strokeWidth="2" />
