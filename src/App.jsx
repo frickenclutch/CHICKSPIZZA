@@ -271,7 +271,7 @@ export default function App() {
                 <li>We sell Wing Sauce with Pizza. <span className="text-red-600 font-bold uppercase">NO WINGS ON THE MENU. PIZZA ONLY.</span></li>
                 <li>When the dough runs out, the phone gets unplugged.</li>
               </ul>
-              <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Strangers will ponder these features for centuries.</p>
+              <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Don't Hesitate !  Call before the cord gets pulled !</p>
             </div>
             <button 
               onClick={attemptToEnter}
