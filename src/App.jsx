@@ -27,6 +27,31 @@ export default function App() {
   const [flyingToppings, setFlyingToppings] = useState(false);
   const [smokePoof, setSmokePoof] = useState(false);
 
+  // Refs for C4 modal focus management
+  const c4TriggerRef = useRef(null);
+  const c4CloseRef = useRef(null);
+
+  // Close C4 modal on Escape; move focus in when opening, restore when closing
+  useEffect(() => {
+    if (!showC4Modal) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowC4Modal(false);
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    // Defer focus until the modal content is mounted
+    const focusTimer = window.setTimeout(() => {
+      c4CloseRef.current?.focus();
+    }, 0);
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      window.clearTimeout(focusTimer);
+      c4TriggerRef.current?.focus();
+    };
+  }, [showC4Modal]);
+
   // Intro logic - simulate her ridiculous schedule
   const attemptToEnter = () => {
     const randomChance = Math.random();
@@ -149,7 +174,7 @@ export default function App() {
 
       {/* Action Overlays for Transitions */}
       {flyingToppings && (
-        <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center overflow-hidden" aria-hidden="true">
           {[...Array(30)].map((_, i) => {
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 800 + 300;
@@ -176,7 +201,7 @@ export default function App() {
       )}
 
       {smokePoof && (
-        <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center overflow-hidden" aria-hidden="true">
           <div className="w-64 h-64 bg-gray-500 rounded-full mix-blend-multiply opacity-80 animate-smoke-poof blur-2xl"></div>
           <div className="absolute w-48 h-48 bg-gray-700 rounded-full mix-blend-multiply opacity-90 animate-smoke-poof blur-xl" style={{animationDelay: '0.1s'}}></div>
           <div className="absolute w-72 h-72 bg-gray-400 rounded-full mix-blend-multiply opacity-60 animate-smoke-poof blur-3xl" style={{animationDelay: '0.2s'}}></div>
@@ -184,59 +209,66 @@ export default function App() {
       )}
 
       {/* Floating Contacts */}
-      <div className="fixed top-24 right-4 flex flex-col gap-4 z-50">
-        <a 
-          href="tel:+13153937700" 
+      <nav aria-label="Contact Chick's Pizza" className="fixed top-24 right-4 flex flex-col gap-4 z-50">
+        <a
+          href="tel:+13153937700"
           onClick={(e) => {
             if(gameState === 'playing') setMessage("Dialing Chick... She probably won't answer.");
           }}
-          className="bg-green-600 text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform flex items-center justify-center group relative" 
-          title="Call Chick"
+          className="bg-green-700 text-white p-3 rounded-full shadow-lg hover:scale-110 focus-visible:scale-110 transition-transform flex items-center justify-center group relative min-w-[44px] min-h-[44px]"
+          aria-label="Call Chick's Pizza at (315) 393-7700"
         >
-          <Phone className="w-6 h-6 animate-pulse" />
-          <span className="absolute right-full mr-4 bg-black text-white px-3 py-1 rounded text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
+          <Phone className="w-6 h-6 animate-pulse" aria-hidden="true" />
+          <span className="absolute right-full mr-4 bg-black text-white px-3 py-1 rounded text-sm font-bold opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg" aria-hidden="true">
             Call (315) 393-7700
           </span>
         </a>
-        <a 
-          href="https://www.google.com/maps/search/?api=1&query=1608+Ford+St,+Ogdensburg,+NY+13669" 
-          target="_blank" 
-          rel="noreferrer" 
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=1608+Ford+St,+Ogdensburg,+NY+13669"
+          target="_blank"
+          rel="noreferrer"
           onClick={(e) => {
             if(gameState === 'playing') setMessage("Mapping GPS Coordinates... 1608 Ford St.");
           }}
-          className="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform flex items-center justify-center group relative" 
-          title="Map Address"
+          className="bg-blue-700 text-white p-3 rounded-full shadow-lg hover:scale-110 focus-visible:scale-110 transition-transform flex items-center justify-center group relative min-w-[44px] min-h-[44px]"
+          aria-label="Directions to 1608 Ford St, Ogdensburg, NY (opens in a new tab)"
         >
-          <MapPin className="w-6 h-6 animate-bounce" />
-          <span className="absolute right-full mr-4 bg-black text-white px-3 py-1 rounded text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
+          <MapPin className="w-6 h-6 animate-bounce" aria-hidden="true" />
+          <span className="absolute right-full mr-4 bg-black text-white px-3 py-1 rounded text-sm font-bold opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg" aria-hidden="true">
             GPS: 1608 Ford St
           </span>
         </a>
-      </div>
+      </nav>
 
       {/* Header */}
       <header className={`${theme === 'italian' ? 'bg-green-800 border-b-4 border-red-600' : 'bg-red-700'} text-white p-4 shadow-xl flex justify-between items-center z-10`}>
         <div className="flex items-center gap-2">
-          <Pizza className="w-8 h-8 text-yellow-300" />
+          <Pizza className="w-8 h-8 text-yellow-300" aria-hidden="true" />
           <h1 className="text-2xl font-black tracking-wider uppercase drop-shadow-md">Chick's Pizza</h1>
         </div>
-        
+
         <div className="flex items-center gap-4">
-          <button 
+          <button
+            type="button"
             onClick={() => setTheme(t => t === 'american' ? 'italian' : 'american')}
-            className="bg-black/20 hover:bg-black/40 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors"
+            aria-pressed={theme === 'italian'}
+            aria-label={`Switch to ${theme === 'american' ? 'Italian' : 'American'} theme`}
+            className="bg-black/30 hover:bg-black/50 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors min-h-[32px]"
           >
-            <Palette className="w-4 h-4" />
-            <span className="hidden sm:inline">{theme === 'american' ? '🇺🇸 American' : '🇮🇹 Italian Mode'}</span>
+            <Palette className="w-4 h-4" aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">{theme === 'american' ? '🇺🇸 American' : '🇮🇹 Italian Mode'}</span>
           </button>
-          
+
           {gameState === 'playing' && (
-            <div className="hidden sm:flex gap-6 text-sm md:text-base font-bold bg-black/30 px-4 py-2 rounded-full border border-white/20 shadow-inner">
-              <span className="flex items-center gap-2 text-green-400">
+            <div
+              className="hidden sm:flex gap-6 text-sm md:text-base font-bold bg-black/40 px-4 py-2 rounded-full border border-white/20 shadow-inner"
+              role="status"
+              aria-label={`Pizzas served ${pizzasServed}. Dough remaining ${ingredients}.`}
+            >
+              <span className="flex items-center gap-2 text-green-300" aria-hidden="true">
                 <Trophy className="w-5 h-5" /> Served: {pizzasServed}
               </span>
-              <span className="flex items-center gap-2 text-yellow-400">
+              <span className="flex items-center gap-2 text-yellow-200" aria-hidden="true">
                 <ChefHat className="w-5 h-5" /> Dough Left: {ingredients}
               </span>
             </div>
@@ -245,10 +277,10 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-grow flex items-center justify-center p-4 relative">
-        
+      <main id="main-content" tabIndex={-1} className="flex-grow flex items-center justify-center p-4 relative focus:outline-none">
+
         {/* Background Oven (Always there, looms ominously) */}
-        <div className="absolute top-10 right-10 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-10 opacity-20 pointer-events-none" aria-hidden="true">
           <div className="w-64 h-64 bg-black rounded-t-full border-8 border-gray-800 flex flex-wrap p-4 relative shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             <div className="w-1/2 h-1/2 border-2 border-gray-700 flex items-end justify-center pb-2"><Flame className="text-orange-500 w-8 h-8 animate-pulse" /></div>
             <div className="w-1/2 h-1/2 border-2 border-gray-700 flex items-end justify-center pb-2"><Flame className="text-red-500 w-8 h-8 animate-pulse" /></div>
@@ -261,7 +293,7 @@ export default function App() {
         {/* --- INTRO SCREEN --- */}
         {gameState === 'intro' && (
           <div className="max-w-2xl bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 text-center relative z-10 transform hover:scale-105 transition-transform duration-500 mx-2">
-            <div className="text-5xl sm:text-6xl mb-4">👵🏼🍕</div>
+            <div className="text-5xl sm:text-6xl mb-4" aria-hidden="true">👵🏼🍕</div>
             <h2 className="text-3xl sm:text-4xl font-black text-red-700 mb-6 uppercase">The Best Pizza Game Ever!</h2>
             <div className="text-left space-y-4 mb-8 text-base sm:text-lg font-medium text-gray-700">
               <p>Welcome to Chick's. The 29-year-old grey-haired legend is in the back.</p>
@@ -273,9 +305,10 @@ export default function App() {
               </ul>
               <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Don't Hesitate !  Call before the cord gets pulled !</p>
             </div>
-            <button 
+            <button
+              type="button"
               onClick={attemptToEnter}
-              className="bg-green-600 hover:bg-green-500 text-white font-black text-xl sm:text-2xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_6px_0_rgb(22,101,52)] hover:shadow-[0_2px_0_rgb(22,101,52)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="bg-green-700 hover:bg-green-600 text-white font-black text-xl sm:text-2xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_6px_0_rgb(22,101,52)] hover:shadow-[0_2px_0_rgb(22,101,52)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               ATTEMPT TO ENTER
             </button>
@@ -284,13 +317,14 @@ export default function App() {
 
         {/* --- CLOSED SCREEN --- */}
         {gameState === 'closed' && (
-          <div className="max-w-md bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-red-500 text-center relative z-10 mx-2">
-            <Clock className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-red-500 mb-4" />
+          <div className="max-w-md bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-red-600 text-center relative z-10 mx-2">
+            <Clock className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-red-600 mb-4" aria-hidden="true" />
             <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">LOCKED OUT!</h2>
-            <p className="text-lg sm:text-xl text-gray-600 mb-8">{message}</p>
-            <button 
+            <p className="text-lg sm:text-xl text-gray-800 mb-8" role="status" aria-live="polite">{message}</p>
+            <button
+              type="button"
               onClick={attemptToEnter}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg sm:text-xl py-3 px-6 sm:px-8 rounded-full shadow-[0_4px_0_rgb(30,58,138)] hover:shadow-[0_2px_0_rgb(30,58,138)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="bg-blue-700 hover:bg-blue-600 text-white font-bold text-lg sm:text-xl py-3 px-6 sm:px-8 rounded-full shadow-[0_4px_0_rgb(30,58,138)] hover:shadow-[0_2px_0_rgb(30,58,138)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               Lurk outside & try again
             </button>
@@ -300,19 +334,20 @@ export default function App() {
         {/* --- GAME OVER SCREEN --- */}
         {gameState === 'gameover' && (
           <div className="max-w-xl bg-black text-white p-6 sm:p-10 rounded-3xl shadow-2xl border-4 border-gray-700 text-center relative z-10 mx-2">
-            <PhoneOff className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-red-500 mb-6 animate-bounce" />
-            <h2 className="text-3xl sm:text-4xl font-black text-red-500 mb-4 uppercase tracking-widest">Phone Unplugged</h2>
+            <PhoneOff className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-red-500 mb-6 animate-bounce" aria-hidden="true" />
+            <h2 className="text-3xl sm:text-4xl font-black text-red-400 mb-4 uppercase tracking-widest">Phone Unplugged</h2>
             <p className="text-xl sm:text-2xl mb-2">Chick ran out of ingredients.</p>
-            <p className="text-base sm:text-lg text-gray-400 mb-8">Shift is over. Go home.</p>
-            
-            <div className="bg-gray-800 rounded-xl p-6 mb-8 border-2 border-dashed border-gray-600">
-              <h3 className="text-yellow-400 font-bold text-lg sm:text-xl mb-2">Final Score</h3>
-              <p className="text-4xl sm:text-5xl font-black">{pizzasServed} <span className="text-base sm:text-lg text-gray-300 block sm:inline mt-2 sm:mt-0">Masterpieces Created</span></p>
+            <p className="text-base sm:text-lg text-gray-300 mb-8">Shift is over. Go home.</p>
+
+            <div className="bg-gray-800 rounded-xl p-6 mb-8 border-2 border-dashed border-gray-600" role="status" aria-label={`Final score: ${pizzasServed} masterpieces created`}>
+              <h3 className="text-yellow-300 font-bold text-lg sm:text-xl mb-2">Final Score</h3>
+              <p className="text-4xl sm:text-5xl font-black">{pizzasServed} <span className="text-base sm:text-lg text-gray-200 block sm:inline mt-2 sm:mt-0">Masterpieces Created</span></p>
             </div>
 
-            <button 
+            <button
+              type="button"
               onClick={restartGame}
-              className="bg-yellow-500 hover:bg-yellow-400 text-black font-black text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_4px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_4px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               Wait 9 Months to Play Again
             </button>
@@ -325,10 +360,16 @@ export default function App() {
             
             {/* Chick's Commentary Box */}
             <div className="w-full bg-blue-50 border-l-8 border-blue-500 p-4 mb-8 rounded-r-xl shadow-sm flex items-start gap-4">
-              <div className="text-4xl bg-white p-2 rounded-full shadow-sm border border-blue-100">👵🏼</div>
+              <div className="text-4xl bg-white p-2 rounded-full shadow-sm border border-blue-100" aria-hidden="true">👵🏼</div>
               <div>
-                <h4 className="font-bold text-blue-900 mb-1 text-sm uppercase tracking-wide">Chick Yells:</h4>
-                <p className="text-xl font-medium text-gray-800 italic">"{message}"</p>
+                <h4 className="font-bold text-blue-900 mb-1 text-sm uppercase tracking-wide" id="chick-commentary-label">Chick Yells:</h4>
+                <p
+                  className="text-xl font-medium text-gray-900 italic"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  aria-labelledby="chick-commentary-label"
+                >"{message}"</p>
               </div>
             </div>
 
@@ -336,48 +377,68 @@ export default function App() {
             {phase === 'pounding' && (
               <div className="text-center w-full">
                 <h3 className="text-2xl font-black text-orange-700 mb-6 uppercase tracking-wider">Phase 1: Subdue The Dough</h3>
-                <div className="w-full bg-gray-200 h-6 rounded-full mb-8 overflow-hidden border-2 border-gray-300">
-                  <div 
-                    className="h-full bg-orange-500 transition-all duration-75"
+                <div
+                  className="w-full bg-gray-200 h-6 rounded-full mb-8 overflow-hidden border-2 border-gray-300"
+                  role="progressbar"
+                  aria-label="Dough pounding progress"
+                  aria-valuemin={0}
+                  aria-valuemax={15}
+                  aria-valuenow={poundCount}
+                  aria-valuetext={`${poundCount} of 15 pounds`}
+                >
+                  <div
+                    className="h-full bg-orange-600 transition-all duration-75"
                     style={{ width: `${(poundCount / 15) * 100}%` }}
                   ></div>
                 </div>
-                <button 
+                <button
+                  type="button"
                   onClick={handlePound}
+                  aria-label={`Pound the dough. ${poundCount} of 15 pounds complete.`}
                   className={`
                     bg-amber-100 border-8 border-amber-600 rounded-full w-48 h-48 mx-auto flex items-center justify-center
                     text-6xl shadow-xl transition-transform active:scale-90
                     ${isShaking ? 'animate-bounce bg-amber-200' : ''}
                   `}
                 >
-                  🥟
+                  <span aria-hidden="true">🥟</span>
                 </button>
-                <p className="mt-6 text-gray-500 font-bold uppercase animate-pulse">Mash button to pound dough like a bad guy!</p>
+                <p className="mt-6 text-gray-700 font-bold uppercase animate-pulse">Mash button to pound dough like a bad guy!</p>
               </div>
             )}
 
             {/* Phase 2: Topping */}
             {phase === 'topping' && (
               <div className="text-center w-full">
-                <h3 className="text-2xl font-black text-red-600 mb-6 uppercase tracking-wider">Phase 2: Baseball Pitch Toppings</h3>
-                
-                <div className="relative w-full h-16 bg-gray-200 rounded-full mb-8 border-4 border-gray-300 overflow-hidden">
+                <h3 className="text-2xl font-black text-red-700 mb-6 uppercase tracking-wider">Phase 2: Baseball Pitch Toppings</h3>
+
+                <div
+                  className="relative w-full h-16 bg-gray-200 rounded-full mb-8 border-4 border-gray-300 overflow-hidden"
+                  role="progressbar"
+                  aria-label="Topping aim. Press the chuck button when marker is in the 40 to 60 percent zone."
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(sliderPos)}
+                  aria-valuetext={sliderPos > 40 && sliderPos < 60 ? 'Marker in target zone' : 'Marker outside target zone'}
+                >
                   {/* Target Zone */}
-                  <div className="absolute top-0 bottom-0 left-[40%] right-[40%] bg-green-300 border-x-4 border-green-500"></div>
+                  <div className="absolute top-0 bottom-0 left-[40%] right-[40%] bg-green-300 border-x-4 border-green-600" aria-hidden="true"></div>
                   {/* Moving Cursor */}
-                  <div 
+                  <div
                     className="absolute top-1/2 -translate-y-1/2 w-8 h-12 bg-red-600 border-2 border-white rounded-md shadow-md z-10"
                     style={{ left: `calc(${sliderPos}% - 16px)` }}
+                    aria-hidden="true"
                   ></div>
                 </div>
 
-                <button 
+                <button
+                  type="button"
                   onClick={handleChuck}
-                  className="bg-red-600 hover:bg-red-500 text-white font-black text-2xl py-6 px-12 rounded-full shadow-[0_8px_0_rgb(153,27,27)] hover:shadow-[0_4px_0_rgb(153,27,27)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all w-full max-w-sm"
+                  className="bg-red-700 hover:bg-red-600 text-white font-black text-2xl py-6 px-12 rounded-full shadow-[0_8px_0_rgb(127,29,29)] hover:shadow-[0_4px_0_rgb(127,29,29)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all w-full max-w-sm"
                 >
                   CHUCK TOPPINGS!
                 </button>
-                <p className="mt-6 text-gray-500 font-bold uppercase">Click when the red marker is in the green zone!</p>
+                <p className="mt-6 text-gray-700 font-bold uppercase">Click when the red marker is in the green zone!</p>
               </div>
             )}
 
@@ -385,39 +446,49 @@ export default function App() {
             {phase === 'launching' && (
               <div className="text-center w-full">
                 <h3 className="text-2xl font-black text-gray-800 mb-6 uppercase tracking-wider">Phase 3: Javelin Launch</h3>
-                
+
                 <div className="flex justify-center items-end h-48 mb-8 gap-4">
                   {/* Power Meter */}
-                  <div className="relative w-16 h-full bg-gray-200 rounded-t-xl border-4 border-gray-400 overflow-hidden flex flex-col justify-end">
-                    <div className="absolute top-0 w-full h-[15%] bg-green-400 border-b-4 border-green-600 z-10 opacity-50"></div>
-                    <div 
+                  <div
+                    className="relative w-16 h-full bg-gray-200 rounded-t-xl border-4 border-gray-400 overflow-hidden flex flex-col justify-end"
+                    role="progressbar"
+                    aria-label="Launch power. Fire the javelin above 85 percent."
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(sliderPos)}
+                    aria-valuetext={sliderPos > 85 ? 'Max power — launch now' : 'Power building'}
+                  >
+                    <div className="absolute top-0 w-full h-[15%] bg-green-400 border-b-4 border-green-600 z-10 opacity-50" aria-hidden="true"></div>
+                    <div
                       className="w-full bg-gradient-to-t from-yellow-400 via-orange-500 to-red-600"
                       style={{ height: `${sliderPos}%` }}
+                      aria-hidden="true"
                     ></div>
                   </div>
-                  
+
                   {/* Oven Visual */}
-                  <div className="w-32 h-40 bg-gray-900 rounded-t-full border-4 border-gray-700 relative overflow-hidden shadow-inner flex items-end justify-center pb-4">
+                  <div className="w-32 h-40 bg-gray-900 rounded-t-full border-4 border-gray-700 relative overflow-hidden shadow-inner flex items-end justify-center pb-4" aria-hidden="true">
                      <Flame className={`w-16 h-16 ${sliderPos > 85 ? 'text-red-500 scale-125' : 'text-orange-600'} transition-all`} />
                   </div>
                 </div>
 
-                <button 
+                <button
+                  type="button"
                   onClick={handleLaunch}
                   className="bg-gray-800 hover:bg-gray-700 text-white font-black text-2xl py-6 px-12 rounded-full shadow-[0_8px_0_rgb(31,41,55)] hover:shadow-[0_4px_0_rgb(31,41,55)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all w-full max-w-sm"
                 >
                   JAVELIN THROW!
                 </button>
-                <p className="mt-6 text-gray-500 font-bold uppercase">Wait for MAX POWER to reach the massive 4-chamber oven!</p>
+                <p className="mt-6 text-gray-700 font-bold uppercase">Wait for MAX POWER to reach the massive 4-chamber oven!</p>
               </div>
             )}
 
             {/* Phase 4: Baking */}
             {phase === 'baking' && (
               <div className="text-center w-full py-12">
-                <Flame className="w-32 h-32 mx-auto text-orange-500 animate-pulse mb-6" />
-                <h3 className="text-4xl font-black text-orange-600 uppercase tracking-widest animate-bounce">BAKING...</h3>
-                <p className="mt-4 text-xl text-gray-600 font-medium">15 to 20 minutes later...</p>
+                <Flame className="w-32 h-32 mx-auto text-orange-600 animate-pulse mb-6" aria-hidden="true" />
+                <h3 className="text-4xl font-black text-orange-700 uppercase tracking-widest animate-bounce">BAKING...</h3>
+                <p className="mt-4 text-xl text-gray-700 font-medium">15 to 20 minutes later...</p>
               </div>
             )}
 
@@ -425,22 +496,52 @@ export default function App() {
             {phase === 'served' && (
               <div className="text-center w-full animate-fadeIn">
                 <div className="relative inline-block mb-8">
-                  <div className="text-8xl animate-bounce absolute z-20 -top-4 -right-4">✨</div>
-                  <div className="text-9xl relative z-10 drop-shadow-2xl">🍕</div>
+                  <div className="text-6xl animate-bounce absolute z-20 -top-4 -right-4" aria-hidden="true">✨</div>
+                  {/* Square slice — Chick cuts her pies into squares */}
+                  <svg
+                    viewBox="0 0 120 120"
+                    className="w-48 h-48 sm:w-56 sm:h-56 relative z-10 drop-shadow-2xl"
+                    role="img"
+                    aria-label="A finished square slice of Chick's pizza"
+                  >
+                    {/* Crust */}
+                    <rect x="6" y="6" width="108" height="108" rx="6" fill="#b45309" stroke="#78350f" strokeWidth="3" />
+                    {/* Cheese */}
+                    <rect x="14" y="14" width="92" height="92" rx="3" fill="#fde68a" />
+                    {/* Sauce blotches */}
+                    <rect x="20" y="22" width="26" height="20" rx="4" fill="#dc2626" opacity="0.55" />
+                    <rect x="64" y="56" width="34" height="22" rx="5" fill="#dc2626" opacity="0.5" />
+                    <rect x="30" y="74" width="22" height="18" rx="4" fill="#dc2626" opacity="0.55" />
+                    {/* Pepperoni (circular toppings) */}
+                    <circle cx="34" cy="36" r="7" fill="#991b1b" />
+                    <circle cx="76" cy="30" r="8" fill="#991b1b" />
+                    <circle cx="92" cy="64" r="7" fill="#991b1b" />
+                    <circle cx="48" cy="66" r="8" fill="#991b1b" />
+                    <circle cx="30" cy="88" r="7" fill="#991b1b" />
+                    <circle cx="78" cy="90" r="7" fill="#991b1b" />
+                    {/* Highlights */}
+                    <rect x="14" y="14" width="92" height="18" rx="3" fill="#ffffff" opacity="0.12" />
+                  </svg>
                   {/* Wing Sauce */}
-                  <div className="absolute -bottom-4 -left-8 bg-orange-600 w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-30 group cursor-help">
-                    <span className="text-white font-bold text-xs transform -rotate-12">SAUCE</span>
+                  <div
+                    className="absolute -bottom-4 -left-8 bg-orange-700 w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-30 group cursor-help"
+                    tabIndex={0}
+                    role="note"
+                    aria-label="Mandatory wing sauce. No wings on the menu."
+                  >
+                    <span className="text-white font-bold text-xs transform -rotate-12" aria-hidden="true">SAUCE</span>
                     {/* Tooltip */}
-                    <div className="absolute opacity-0 group-hover:opacity-100 bottom-full mb-2 bg-black text-white text-xs p-2 rounded w-32 pointer-events-none transition-opacity">
+                    <div className="absolute opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bottom-full mb-2 bg-black text-white text-xs p-2 rounded w-32 pointer-events-none transition-opacity" aria-hidden="true">
                       Mandatory wing sauce. NO WINGS.
                     </div>
                   </div>
                 </div>
-                
-                <h3 className="text-4xl font-black text-green-600 mb-2 uppercase tracking-wider">WALLAH!</h3>
-                <p className="text-xl text-gray-700 mb-8 font-bold">The absolute best pizza ever created.</p>
 
-                <button 
+                <h3 className="text-4xl font-black text-green-700 mb-2 uppercase tracking-wider">WALLAH!</h3>
+                <p className="text-xl text-gray-800 mb-8 font-bold">The absolute best pizza ever created — cut square, the way Chick does it.</p>
+
+                <button
+                  type="button"
                   onClick={handleNextPizza}
                   className="bg-yellow-500 hover:bg-yellow-400 text-black font-black text-2xl py-4 px-12 rounded-full shadow-[0_6px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all"
                 >
@@ -460,49 +561,62 @@ export default function App() {
       </footer>
 
       {/* C4 Discrete & Romantic Button */}
-      <button 
+      <button
+        type="button"
+        ref={c4TriggerRef}
         onClick={() => setShowC4Modal(true)}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95vw] sm:w-auto max-w-max bg-stone-900/60 backdrop-blur-md text-amber-100/70 hover:text-amber-200 font-serif text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] px-4 sm:px-6 py-2 rounded-full border border-stone-500/30 z-50 transition-all duration-1000 hover:shadow-[0_0_20px_rgba(217,119,6,0.3)] hover:border-amber-700/50 flex flex-wrap items-center justify-center gap-2 sm:gap-3 opacity-70 hover:opacity-100 group text-center leading-tight"
+        aria-haspopup="dialog"
+        aria-expanded={showC4Modal}
+        aria-controls="c4-dialog"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95vw] sm:w-auto max-w-max bg-stone-900/70 backdrop-blur-md text-amber-100 hover:text-amber-100 font-serif text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] px-4 sm:px-6 py-2 rounded-full border border-stone-500/50 z-50 transition-all duration-1000 hover:shadow-[0_0_20px_rgba(217,119,6,0.3)] hover:border-amber-700/70 flex flex-wrap items-center justify-center gap-2 sm:gap-3 group text-center leading-tight min-h-[32px]"
       >
-        <span className="text-red-700 opacity-60 group-hover:opacity-100 transition-opacity text-sm sm:text-base leading-none">❦</span>
-        <span className="mt-0.5 flex-1 whitespace-normal">Developed & Maintained by C4 Technologies</span>
-        <span className="text-green-700 opacity-60 group-hover:opacity-100 transition-opacity text-sm sm:text-base leading-none">❦</span>
+        <span className="text-red-400 group-hover:text-red-300 transition-colors text-sm sm:text-base leading-none" aria-hidden="true">❦</span>
+        <span className="mt-0.5 flex-1 whitespace-normal">Developed &amp; Maintained by C4 Technologies</span>
+        <span className="text-green-400 group-hover:text-green-300 transition-colors text-sm sm:text-base leading-none" aria-hidden="true">❦</span>
       </button>
 
       {/* C4 FIRE MODAL */}
       {showC4Modal && (
-        <div className="fixed inset-0 z-[100] bg-black overflow-hidden flex flex-col items-center justify-center p-4">
+        <div
+          id="c4-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="c4-dialog-title"
+          className="fixed inset-0 z-[100] bg-black overflow-hidden flex flex-col items-center justify-center p-4"
+        >
           {/* Fire Background Effect */}
-          <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-orange-600 to-transparent opacity-80 animate-pulse"></div>
-          <div className="absolute inset-0 flex flex-wrap justify-around items-end overflow-hidden pb-10">
+          <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-orange-600 to-transparent opacity-80 animate-pulse" aria-hidden="true"></div>
+          <div className="absolute inset-0 flex flex-wrap justify-around items-end overflow-hidden pb-10" aria-hidden="true">
             {[...Array(20)].map((_, i) => (
-              <Flame 
-                key={i} 
-                className="text-yellow-500 animate-bounce absolute bottom-0" 
-                style={{ 
+              <Flame
+                key={i}
+                className="text-yellow-500 animate-bounce absolute bottom-0"
+                style={{
                   left: `${Math.random() * 100}%`,
-                  width: `${Math.random() * 100 + 50}px`, 
+                  width: `${Math.random() * 100 + 50}px`,
                   height: `${Math.random() * 100 + 50}px`,
                   animationDelay: `${Math.random()}s`,
                   animationDuration: `${Math.random() + 0.5}s`
-                }} 
+                }}
               />
             ))}
           </div>
 
           <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-lg">
-            <h2 className="text-white text-4xl sm:text-5xl font-black text-center drop-shadow-[0_0_15px_rgba(255,0,0,1)] mb-4 tracking-widest whitespace-nowrap">
+            <h2 id="c4-dialog-title" className="text-white text-4xl sm:text-5xl font-black text-center drop-shadow-[0_0_15px_rgba(255,0,0,1)] mb-4 tracking-widest whitespace-nowrap">
               C4 OVERRIDE
             </h2>
             
             {/* Pepperoni Button */}
-<button 
+<button
+  type="button"
   onClick={() => {
     window.location.href = 'https://patrick-lake.vercel.app';
   }}
+  aria-label="Proceed to C4 Development (leaves Chick's Pizza)"
   className="w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center p-4 transform hover:scale-110 transition-all relative overflow-hidden group rounded-full shadow-[0_0_80px_rgba(220,38,38,0.6)]"
 >
-              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-2xl">
+              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-2xl" aria-hidden="true">
                 {/* Meat base */}
                 <circle cx="50" cy="50" r="48" fill="#991b1b" stroke="#7f1d1d" strokeWidth="2" />
                 <circle cx="50" cy="50" r="46" fill="#b91c1c" />
@@ -539,11 +653,14 @@ export default function App() {
             </button>
 
             {/* Mushroom Button */}
-            <button 
+            <button
+              type="button"
+              ref={c4CloseRef}
               onClick={() => setShowC4Modal(false)}
+              aria-label="Abort — close dialog and stay with Chick's Pizza"
               className="w-48 h-40 sm:w-56 sm:h-48 flex items-center justify-center p-2 transform hover:scale-110 transition-all mt-4 relative overflow-visible drop-shadow-2xl"
             >
-              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full overflow-visible">
+              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
                 {/* Stem */}
                 <path d="M 40 50 L 40 95 C 40 98 45 100 50 100 C 55 100 60 98 60 95 L 60 50 Z" fill="#eaddcd" stroke="#a89f91" strokeWidth="2" />
                 <path d="M 45 50 L 45 95 M 50 50 L 50 95 M 55 50 L 55 95" stroke="#d4c5b3" strokeWidth="1" />
