@@ -497,30 +497,181 @@ export default function App() {
               <div className="text-center w-full animate-fadeIn">
                 <div className="relative inline-block mb-8">
                   <div className="text-6xl animate-bounce absolute z-20 -top-4 -right-4" aria-hidden="true">✨</div>
-                  {/* Square slice — Chick cuts her pies into squares */}
+                  {/* Chick's round pie, tavern-cut into squares, viewed from above */}
                   <svg
-                    viewBox="0 0 120 120"
-                    className="w-48 h-48 sm:w-56 sm:h-56 relative z-10 drop-shadow-2xl"
+                    viewBox="0 0 140 140"
+                    className="w-56 h-56 sm:w-64 sm:h-64 relative z-10 drop-shadow-2xl"
                     role="img"
-                    aria-label="A finished square slice of Chick's pizza"
+                    aria-label="Chick's round pizza cut into squares, topped with pepperoni, crumbled sausage, mushrooms, green peppers, onions, and black olives over cheese and deep red sauce, with a bubbly floury char-spotted crust and orange wing sauce drizzle"
                   >
-                    {/* Crust */}
-                    <rect x="6" y="6" width="108" height="108" rx="6" fill="#b45309" stroke="#78350f" strokeWidth="3" />
-                    {/* Cheese */}
-                    <rect x="14" y="14" width="92" height="92" rx="3" fill="#fde68a" />
-                    {/* Sauce blotches */}
-                    <rect x="20" y="22" width="26" height="20" rx="4" fill="#dc2626" opacity="0.55" />
-                    <rect x="64" y="56" width="34" height="22" rx="5" fill="#dc2626" opacity="0.5" />
-                    <rect x="30" y="74" width="22" height="18" rx="4" fill="#dc2626" opacity="0.55" />
-                    {/* Pepperoni (circular toppings) */}
-                    <circle cx="34" cy="36" r="7" fill="#991b1b" />
-                    <circle cx="76" cy="30" r="8" fill="#991b1b" />
-                    <circle cx="92" cy="64" r="7" fill="#991b1b" />
-                    <circle cx="48" cy="66" r="8" fill="#991b1b" />
-                    <circle cx="30" cy="88" r="7" fill="#991b1b" />
-                    <circle cx="78" cy="90" r="7" fill="#991b1b" />
-                    {/* Highlights */}
-                    <rect x="14" y="14" width="92" height="18" rx="3" fill="#ffffff" opacity="0.12" />
+                    <defs>
+                      <clipPath id="cheeseArea">
+                        <circle cx="70" cy="70" r="50" />
+                      </clipPath>
+                    </defs>
+
+                    {/* Wing-sauce splatter on the pizza paper around the pie */}
+                    <circle cx="16" cy="22" r="1.5" fill="#ea580c" opacity="0.5" />
+                    <circle cx="126" cy="18" r="2" fill="#ea580c" opacity="0.55" />
+                    <circle cx="132" cy="62" r="1.3" fill="#ea580c" opacity="0.5" />
+                    <circle cx="123" cy="120" r="1.8" fill="#ea580c" opacity="0.55" />
+                    <circle cx="70" cy="136" r="1.2" fill="#ea580c" opacity="0.5" />
+                    <circle cx="12" cy="115" r="1.6" fill="#ea580c" opacity="0.55" />
+                    <ellipse cx="8" cy="78" rx="1.3" ry="0.8" fill="#ea580c" opacity="0.5" />
+                    <circle cx="38" cy="6" r="1" fill="#fb923c" opacity="0.5" />
+                    <circle cx="110" cy="134" r="1" fill="#fb923c" opacity="0.5" />
+
+                    {/* Crust outer base */}
+                    <circle cx="70" cy="70" r="60" fill="#d97706" stroke="#78350f" strokeWidth="1.5" />
+                    <circle cx="70" cy="70" r="60" fill="#fbbf24" opacity="0.25" />
+
+                    {/* Deep red sauce ring */}
+                    <circle cx="70" cy="70" r="55" fill="#7f1d1d" />
+                    <circle cx="70" cy="70" r="55" fill="#450a0a" opacity="0.2" />
+
+                    {/* Cheese layer */}
+                    <circle cx="70" cy="70" r="50" fill="#fde68a" stroke="#f59e0b" strokeWidth="0.4" />
+
+                    {/* Everything on the cheese, clipped to the inner circle */}
+                    <g clipPath="url(#cheeseArea)">
+                      {/* Red sauce peeking through cheese */}
+                      <ellipse cx="50" cy="42" rx="5" ry="3" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="90" cy="55" rx="6" ry="4" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="60" cy="80" rx="5" ry="3" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="100" cy="90" rx="4" ry="3" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="45" cy="95" rx="5" ry="3" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="80" cy="105" rx="4" ry="2.5" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="105" cy="50" rx="4" ry="2.5" fill="#b91c1c" opacity="0.32" />
+                      <ellipse cx="35" cy="65" rx="4" ry="2.5" fill="#b91c1c" opacity="0.32" />
+
+                      {/* Wing-sauce drizzle */}
+                      <path d="M 22 50 C 50 45 90 55 118 48" stroke="#ea580c" strokeWidth="1.8" fill="none" opacity="0.85" strokeLinecap="round" />
+                      <path d="M 22 75 C 52 80 88 70 118 78" stroke="#ea580c" strokeWidth="1.8" fill="none" opacity="0.85" strokeLinecap="round" />
+                      <path d="M 25 100 C 50 95 90 105 115 98" stroke="#ea580c" strokeWidth="1.6" fill="none" opacity="0.8" strokeLinecap="round" />
+
+                      {/* Square-cut grid — thin dark-red lines where the knife separated the cheese */}
+                      <g stroke="#7f1d1d" strokeWidth="1" opacity="0.55" strokeLinecap="round">
+                        <line x1="40" y1="0" x2="40" y2="140" />
+                        <line x1="70" y1="0" x2="70" y2="140" />
+                        <line x1="100" y1="0" x2="100" y2="140" />
+                        <line x1="0" y1="40" x2="140" y2="40" />
+                        <line x1="0" y1="70" x2="140" y2="70" />
+                        <line x1="0" y1="100" x2="140" y2="100" />
+                      </g>
+
+                      {/* Pepperoni */}
+                      <circle cx="45" cy="48" r="3.8" fill="#991b1b" />
+                      <circle cx="88" cy="42" r="4.2" fill="#991b1b" />
+                      <circle cx="95" cy="82" r="4" fill="#991b1b" />
+                      <circle cx="50" cy="100" r="3.8" fill="#991b1b" />
+                      <circle cx="72" cy="58" r="3.5" fill="#991b1b" />
+                      <circle cx="33" cy="75" r="3.4" fill="#991b1b" />
+                      <circle cx="110" cy="70" r="3.2" fill="#991b1b" />
+                      <circle cx="80" cy="95" r="3.3" fill="#991b1b" />
+
+                      {/* Crumbled sausage */}
+                      <g fill="#78350f">
+                        <ellipse cx="58" cy="36" rx="2.2" ry="1.5" />
+                        <ellipse cx="61" cy="38" rx="1.7" ry="1.1" />
+                        <ellipse cx="64" cy="35" rx="1.6" ry="1.1" />
+                        <ellipse cx="83" cy="60" rx="2.2" ry="1.5" />
+                        <ellipse cx="80" cy="62" rx="1.5" ry="1" />
+                        <ellipse cx="68" cy="85" rx="2.2" ry="1.5" />
+                        <ellipse cx="65" cy="87" rx="1.5" ry="1" />
+                        <ellipse cx="42" cy="85" rx="2" ry="1.3" />
+                        <ellipse cx="45" cy="87" rx="1.6" ry="1" />
+                        <ellipse cx="100" cy="105" rx="2" ry="1.3" />
+                        <ellipse cx="103" cy="107" rx="1.5" ry="0.9" />
+                        <ellipse cx="115" cy="55" rx="1.8" ry="1.1" />
+                        <ellipse cx="117" cy="58" rx="1.3" ry="0.9" />
+                      </g>
+                      <g fill="#92400e">
+                        <ellipse cx="62" cy="37" rx="1.2" ry="0.8" />
+                        <ellipse cx="85" cy="61" rx="1.2" ry="0.8" />
+                        <ellipse cx="69" cy="86" rx="1.2" ry="0.8" />
+                        <ellipse cx="44" cy="86" rx="1" ry="0.7" />
+                      </g>
+
+                      {/* Mushroom slices */}
+                      <g fill="#d6bea1" stroke="#8b6f52" strokeWidth="0.4">
+                        <path d="M 48 62 C 50 58 56 58 58 63 C 58 67 52 68 48 66 C 46 64 46 63 48 62 Z" />
+                        <path d="M 75 48 C 77 44 83 44 85 49 C 85 53 79 54 75 52 C 73 50 73 49 75 48 Z" />
+                        <path d="M 100 72 C 102 68 108 68 110 73 C 110 77 104 78 100 76 C 98 74 98 73 100 72 Z" />
+                        <path d="M 42 100 C 44 96 50 96 52 101 C 52 105 46 106 42 104 C 40 102 40 101 42 100 Z" />
+                        <path d="M 82 76 C 84 72 90 72 92 77 C 92 81 86 82 82 80 C 80 78 80 77 82 76 Z" />
+                        <path d="M 60 108 C 62 104 68 104 70 109 C 70 113 64 114 60 112 C 58 110 58 109 60 108 Z" />
+                        <path d="M 110 95 C 112 91 118 91 120 96 C 120 100 114 101 110 99 C 108 97 108 96 110 95 Z" />
+                      </g>
+
+                      {/* Green peppers */}
+                      <g fill="#15803d" stroke="#166534" strokeWidth="0.4">
+                        <path d="M 55 68 q 5 -2 10 1 q -2 3 -6 3 q -4 -1 -4 -4 z" />
+                        <path d="M 88 100 q 5 -2 9 1 q -2 3 -5 3 q -3 -1 -4 -4 z" />
+                        <path d="M 105 55 q 4 -2 8 1 q -2 3 -5 3 q -3 -1 -3 -4 z" />
+                        <path d="M 38 82 q 4 -2 8 1 q -2 3 -5 3 q -3 -1 -3 -4 z" fill="#16a34a" />
+                        <path d="M 60 112 q 4 -2 7 0 q -1 2 -3 3 q -3 0 -4 -3 z" />
+                        <path d="M 95 62 q 4 -2 7 0 q -1 2 -3 3 q -3 0 -4 -3 z" />
+                      </g>
+
+                      {/* Black olive slices */}
+                      <circle cx="50" cy="60" r="2.3" fill="#171717" />
+                      <circle cx="50" cy="60" r="0.9" fill="#fde68a" />
+                      <circle cx="90" cy="78" r="2.5" fill="#171717" />
+                      <circle cx="90" cy="78" r="1" fill="#fde68a" />
+                      <circle cx="73" cy="108" r="2.3" fill="#171717" />
+                      <circle cx="73" cy="108" r="0.9" fill="#fde68a" />
+                      <circle cx="105" cy="62" r="2.3" fill="#171717" />
+                      <circle cx="105" cy="62" r="0.9" fill="#fde68a" />
+                      <circle cx="36" cy="55" r="2" fill="#171717" />
+                      <circle cx="36" cy="55" r="0.8" fill="#fde68a" />
+
+                      {/* Onion slivers */}
+                      <g fill="#f8fafc" opacity="0.9" stroke="#94a3b8" strokeWidth="0.4">
+                        <path d="M 55 78 q 4 -1 7 1 q -1 2 -4 2 q -2 -1 -3 -3 z" />
+                        <path d="M 85 92 q 4 -1 7 1 q -1 2 -4 2 q -2 -1 -3 -3 z" />
+                        <path d="M 68 45 q 4 -1 7 1 q -1 2 -4 2 q -2 -1 -3 -3 z" />
+                        <path d="M 42 70 q 4 -1 7 1 q -1 2 -4 2 q -2 -1 -3 -3 z" />
+                      </g>
+                    </g>
+
+                    {/* Cornicione detail — char, bubbles, flour on the outer ring */}
+                    <ellipse cx="70" cy="14" rx="2.8" ry="1.3" fill="#0c0a09" opacity="0.75" />
+                    <ellipse cx="113" cy="30" rx="2.5" ry="1.2" fill="#0c0a09" opacity="0.7" transform="rotate(-40 113 30)" />
+                    <ellipse cx="125" cy="70" rx="1.3" ry="2.8" fill="#0c0a09" opacity="0.72" />
+                    <ellipse cx="113" cy="110" rx="2.5" ry="1.2" fill="#0c0a09" opacity="0.7" transform="rotate(40 113 110)" />
+                    <ellipse cx="70" cy="126" rx="2.8" ry="1.3" fill="#0c0a09" opacity="0.72" />
+                    <ellipse cx="28" cy="110" rx="2.5" ry="1.2" fill="#0c0a09" opacity="0.7" transform="rotate(-40 28 110)" />
+                    <ellipse cx="15" cy="70" rx="1.3" ry="2.8" fill="#0c0a09" opacity="0.75" />
+                    <ellipse cx="28" cy="30" rx="2.5" ry="1.2" fill="#0c0a09" opacity="0.7" transform="rotate(40 28 30)" />
+
+                    <circle cx="50" cy="15" r="1.3" fill="#fde68a" opacity="0.7" />
+                    <circle cx="95" cy="18" r="1.2" fill="#fde68a" opacity="0.65" />
+                    <circle cx="122" cy="50" r="1.1" fill="#fed7aa" opacity="0.65" />
+                    <circle cx="123" cy="92" r="1.3" fill="#fde68a" opacity="0.7" />
+                    <circle cx="95" cy="122" r="1.2" fill="#fde68a" opacity="0.65" />
+                    <circle cx="45" cy="124" r="1.2" fill="#fed7aa" opacity="0.6" />
+                    <circle cx="16" cy="92" r="1.2" fill="#fde68a" opacity="0.7" />
+                    <circle cx="18" cy="48" r="1.1" fill="#fed7aa" opacity="0.6" />
+                    <circle cx="40" cy="18" r="0.9" fill="#fde68a" opacity="0.65" />
+
+                    <circle cx="60" cy="13" r="0.6" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="80" cy="14" r="0.7" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="103" cy="22" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="119" cy="40" r="0.6" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="126" cy="60" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="121" cy="84" r="0.7" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="108" cy="104" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="88" cy="121" r="0.6" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="60" cy="128" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="40" cy="121" r="0.7" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="22" cy="104" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="13" cy="82" r="0.6" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="14" cy="60" r="0.7" fill="#fef9c3" opacity="0.9" />
+                    <circle cx="22" cy="38" r="0.5" fill="#fef9c3" opacity="0.85" />
+                    <circle cx="38" cy="20" r="0.6" fill="#fef9c3" opacity="0.9" />
+
+                    {/* Final dark rim stroke */}
+                    <circle cx="70" cy="70" r="60" fill="none" stroke="#7c2d12" strokeWidth="0.8" />
                   </svg>
                   {/* Wing Sauce */}
                   <div
