@@ -762,7 +762,7 @@ export default function App() {
 <button
   type="button"
   onClick={() => {
-    window.location.href = 'https://patrick-lake.vercel.app';
+    window.location.href = 'https://c4technologies.pages.dev';
   }}
   aria-label="Proceed to C4 Development (leaves Chick's Pizza)"
   className="w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center p-4 transform hover:scale-110 transition-all relative overflow-hidden group rounded-full shadow-[0_0_80px_rgba(220,38,38,0.6)]"
