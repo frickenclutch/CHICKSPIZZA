@@ -60,7 +60,7 @@ export default function App() {
       setMessage("It's currently one of the 9 months she's closed. Try again.");
     } else if (randomChance < 0.6) {
       setGameState('closed');
-      setMessage("It's Tuesday. She's only open 3 days a week. Come back later.");
+      setMessage("It's Tuesday. She's only open 4 days a week. Come back later.");
     } else if (randomChance < 0.8) {
       setGameState('closed');
       setMessage("It's 3:59 PM. She opens at 4:00 PM EXACTLY. Wait.");
@@ -299,7 +299,7 @@ export default function App() {
               <p>Welcome to Chick's. The 29-year-old grey-haired legend is in the back.</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>She's closed 9 months of the year.</li>
-                <li>Open 3 days a week. 4 PM to 8 PM <span className="underline font-bold">ONLY</span>.</li>
+                <li>Open 4 days a week. 4 PM to 8 PM <span className="underline font-bold">ONLY</span>.</li>
                 <li>We sell Wing Sauce with Pizza. <span className="text-red-600 font-bold uppercase">NO WINGS ON THE MENU. PIZZA ONLY.</span></li>
                 <li>When the dough runs out, the phone gets unplugged.</li>
               </ul>
