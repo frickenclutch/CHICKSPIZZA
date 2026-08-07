@@ -12,7 +12,6 @@ export default function App() {
   const [ingredients, setIngredients] = useState(TOTAL_INGREDIENTS);
   const [pizzasServed, setPizzasServed] = useState(0);
   const [theme, setTheme] = useState('american');
-  const [showC4Modal, setShowC4Modal] = useState(false);
   const [jukeboxOn, setJukeboxOn] = useState(false);
   const [jukeboxNote, setJukeboxNote] = useState('');
   const [pilgrimFrom, setPilgrimFrom] = useState(null);
@@ -34,9 +33,6 @@ export default function App() {
   const [flyingToppings, setFlyingToppings] = useState(false);
   const [smokePoof, setSmokePoof] = useState(false);
 
-  // Refs for C4 modal focus management
-  const c4TriggerRef = useRef(null);
-  const c4CloseRef = useRef(null);
   const jukeboxRef = useRef(null);
 
   // Rolling-pin cursor + jukebox lifecycle (mute-first; no autoplay)
@@ -81,27 +77,6 @@ export default function App() {
       setJukeboxOn(false);
     }
   };
-
-  // Close C4 modal on Escape; move focus in when opening, restore when closing
-  useEffect(() => {
-    if (!showC4Modal) return;
-    const handleKey = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setShowC4Modal(false);
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    // Defer focus until the modal content is mounted
-    const focusTimer = window.setTimeout(() => {
-      c4CloseRef.current?.focus();
-    }, 0);
-    return () => {
-      document.removeEventListener('keydown', handleKey);
-      window.clearTimeout(focusTimer);
-      c4TriggerRef.current?.focus();
-    };
-  }, [showC4Modal]);
 
   // Intro logic - simulate her ridiculous schedule
   const attemptToEnter = () => {
@@ -797,145 +772,11 @@ export default function App() {
       </main>
       
       {/* Footer */}
-      <footer className="text-center p-4 text-xs sm:text-sm text-orange-800 font-medium opacity-80 z-10 mb-16 sm:mb-8 px-4">
+      <footer className="text-center p-4 text-xs sm:text-sm text-orange-800 font-medium opacity-80 z-10 mb-6 px-4">
         <p>THE BEST pie you'll ever try — best tasted in person. All thanks to Chick.</p>
         <p className="mt-1 font-bold text-red-800">We Deliver, but you gotta tip us well!</p>
         <p className="mt-1 opacity-90">1608 Ford St · Ogdensburg, NY · (315) 393-7700 · Pizza + wing sauce · No wings</p>
-        <p className="mt-2 text-[11px] sm:text-xs opacity-70">Cursor = rolling pin. Jukebox starts unplugged (header). Game is free. Pie is the pilgrimage.</p>
       </footer>
-
-      {/* C4 Discrete & Romantic Button */}
-      <button
-        type="button"
-        ref={c4TriggerRef}
-        onClick={() => setShowC4Modal(true)}
-        aria-haspopup="dialog"
-        aria-expanded={showC4Modal}
-        aria-controls="c4-dialog"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95vw] sm:w-auto max-w-max bg-stone-900/70 backdrop-blur-md text-amber-100 hover:text-amber-100 font-serif text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] px-4 sm:px-6 py-2 rounded-full border border-stone-500/50 z-50 transition-all duration-1000 hover:shadow-[0_0_20px_rgba(217,119,6,0.3)] hover:border-amber-700/70 flex flex-wrap items-center justify-center gap-2 sm:gap-3 group text-center leading-tight min-h-[32px]"
-      >
-        <span className="text-red-400 group-hover:text-red-300 transition-colors text-sm sm:text-base leading-none" aria-hidden="true">❦</span>
-        <span className="mt-0.5 flex-1 whitespace-normal">Developed &amp; Maintained by C4 Technologies</span>
-        <span className="text-green-400 group-hover:text-green-300 transition-colors text-sm sm:text-base leading-none" aria-hidden="true">❦</span>
-      </button>
-
-      {/* C4 FIRE MODAL */}
-      {showC4Modal && (
-        <div
-          id="c4-dialog"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="c4-dialog-title"
-          className="fixed inset-0 z-[100] bg-black overflow-hidden flex flex-col items-center justify-center p-4"
-        >
-          {/* Fire Background Effect */}
-          <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-orange-600 to-transparent opacity-80 animate-pulse" aria-hidden="true"></div>
-          <div className="absolute inset-0 flex flex-wrap justify-around items-end overflow-hidden pb-10" aria-hidden="true">
-            {[...Array(20)].map((_, i) => (
-              <Flame
-                key={i}
-                className="text-yellow-500 animate-bounce absolute bottom-0"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  width: `${Math.random() * 100 + 50}px`,
-                  height: `${Math.random() * 100 + 50}px`,
-                  animationDelay: `${Math.random()}s`,
-                  animationDuration: `${Math.random() + 0.5}s`
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-lg">
-            <h2 id="c4-dialog-title" className="text-white text-4xl sm:text-5xl font-black text-center drop-shadow-[0_0_15px_rgba(255,0,0,1)] mb-4 tracking-widest whitespace-nowrap">
-              C4 OVERRIDE
-            </h2>
-            
-            {/* Pepperoni Button */}
-<button
-  type="button"
-  onClick={() => {
-    window.location.href = 'https://c4technologies.pages.dev';
-  }}
-  aria-label="Proceed to C4 Development (leaves Chick's Pizza)"
-  className="w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center p-4 transform hover:scale-110 transition-all relative overflow-hidden group rounded-full shadow-[0_0_80px_rgba(220,38,38,0.6)]"
->
-              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-2xl" aria-hidden="true">
-                {/* Meat base */}
-                <circle cx="50" cy="50" r="48" fill="#991b1b" stroke="#7f1d1d" strokeWidth="2" />
-                <circle cx="50" cy="50" r="46" fill="#b91c1c" />
-                {/* Fat marbling / texture highlights */}
-                <path d="M 20 30 Q 30 20 40 30 T 60 20 T 80 40" stroke="#fca5a5" strokeWidth="1.5" fill="none" opacity="0.3" />
-                <path d="M 15 60 Q 35 70 50 50 T 85 70" stroke="#fca5a5" strokeWidth="1" fill="none" opacity="0.2" />
-                <path d="M 40 80 Q 50 90 70 75" stroke="#fca5a5" strokeWidth="2" fill="none" opacity="0.2" />
-                
-                {/* Spices / Darker meat spots */}
-                <circle cx="30" cy="30" r="6" fill="#7f1d1d" opacity="0.8"/>
-                <circle cx="70" cy="35" r="5" fill="#7f1d1d" opacity="0.7"/>
-                <circle cx="45" cy="70" r="7" fill="#7f1d1d" opacity="0.8"/>
-                <circle cx="25" cy="65" r="4" fill="#7f1d1d" opacity="0.6"/>
-                <circle cx="80" cy="60" r="6" fill="#7f1d1d" opacity="0.8"/>
-                <circle cx="55" cy="20" r="4" fill="#7f1d1d" opacity="0.7"/>
-                <circle cx="65" cy="80" r="5" fill="#7f1d1d" opacity="0.6"/>
-                <circle cx="15" cy="45" r="3" fill="#7f1d1d" opacity="0.8"/>
-                <circle cx="50" cy="45" r="8" fill="#7f1d1d" opacity="0.5"/>
-                
-                {/* Inner shadow for 3D effect */}
-                <circle cx="50" cy="50" r="48" fill="url(#pep-shadow)" opacity="0.4" />
-                <defs>
-                  <radialGradient id="pep-shadow" cx="30%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                    <stop offset="70%" stopColor="black" stopOpacity="0" />
-                    <stop offset="100%" stopColor="black" stopOpacity="0.6" />
-                  </radialGradient>
-                </defs>
-              </svg>
-              
-              <span className="text-white font-black text-lg sm:text-xl text-center z-10 uppercase drop-shadow-[0_4px_4px_rgba(0,0,0,1)] leading-tight tracking-wider px-4 w-full break-words">
-                PROCEED:<br/><br/>C4<br/>DEVELOPMENT
-              </span>
-            </button>
-
-            {/* Mushroom Button */}
-            <button
-              type="button"
-              ref={c4CloseRef}
-              onClick={() => setShowC4Modal(false)}
-              aria-label="Abort — close dialog and stay with Chick's Pizza"
-              className="w-48 h-40 sm:w-56 sm:h-48 flex items-center justify-center p-2 transform hover:scale-110 transition-all mt-4 relative overflow-visible drop-shadow-2xl"
-            >
-              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
-                {/* Stem */}
-                <path d="M 40 50 L 40 95 C 40 98 45 100 50 100 C 55 100 60 98 60 95 L 60 50 Z" fill="#eaddcd" stroke="#a89f91" strokeWidth="2" />
-                <path d="M 45 50 L 45 95 M 50 50 L 50 95 M 55 50 L 55 95" stroke="#d4c5b3" strokeWidth="1" />
-                
-                {/* Cap Base */}
-                <path d="M 10 50 C 10 20 30 5 50 5 C 70 5 90 20 90 50 Z" fill="#f5ede3" stroke="#8c8275" strokeWidth="2" />
-                
-                {/* Gills (Underside of cap) */}
-                <path d="M 10 50 Q 50 65 90 50 Z" fill="#bcaaa4" stroke="#8c8275" strokeWidth="2" />
-                <path d="M 20 52 L 25 56 M 30 54 L 35 59 M 40 55 L 45 61 M 50 56 L 50 62 M 60 55 L 55 61 M 70 54 L 65 59 M 80 52 L 75 56" stroke="#8c8275" strokeWidth="1.5" opacity="0.7" />
-                
-                {/* Cap Shading */}
-                <path d="M 10 50 C 10 20 30 5 50 5 C 70 5 90 20 90 50 Z" fill="url(#mush-shadow)" opacity="0.5" />
-                
-                <defs>
-                  <radialGradient id="mush-shadow" cx="30%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor="white" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#8c8275" stopOpacity="0.5" />
-                  </radialGradient>
-                </defs>
-              </svg>
-
-               <span className="text-stone-900 font-black text-base sm:text-lg text-center z-10 uppercase drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] leading-tight absolute top-6 sm:top-8 left-0 right-0 px-4 flex flex-col items-center justify-center w-full">
-                <span>ABORT:</span>
-                <span className="mt-1">STAY WITH</span>
-                <span>CHICK</span>
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Tailwind standard utility classes injected via standard styling for Vercel/Next/CRA. No external CSS needed. */}
       <style dangerouslySetInnerHTML={{__html: `
