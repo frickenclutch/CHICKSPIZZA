@@ -31,7 +31,7 @@ html.chicks-rolling-pin [tabindex]:not([tabindex='-1']) {
   }
 }
 
-/* Pizza pan jukebox — spin + assemble while playing */
+/* Pizza pan jukebox — spin + assemble while playing (cache-bust rebuild for www) */
 @keyframes chicks-pan-spin {
   from {
     transform: rotate(0deg);

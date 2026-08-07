@@ -1,1 +1,7 @@
+# Never soft-fall-back asset paths to the SPA shell.
+# If a hashed file is briefly missing, return 404 instead of HTML —
+# so Cloudflare cannot cache index.html under /assets/*.css (immutable).
+/assets/*  /404.html  404
+
+# SPA client routes
 /*    /index.html    200
