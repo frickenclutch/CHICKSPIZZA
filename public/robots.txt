@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chickspizza.com/sitemap.xml

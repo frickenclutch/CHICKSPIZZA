@@ -142,7 +142,7 @@ export default function App() {
           setPhase('served');
           setIngredients(prev => prev - 1);
           setPizzasServed(prev => prev + 1);
-          setMessage("WALLAH! The best pizza ever created! Be sure to order with wing sauce (NO WINGS).");
+          setMessage("WALLAH! The best pizza ever created! Order with wing sauce (NO WINGS). We deliver — but you gotta tip us well!");
         }, 3000);
       }, 2000);
     } else {
@@ -293,17 +293,18 @@ export default function App() {
         {/* --- INTRO SCREEN --- */}
         {gameState === 'intro' && (
           <div className="max-w-2xl bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 text-center relative z-10 transform hover:scale-105 transition-transform duration-500 mx-2">
-            <div className="text-5xl sm:text-6xl mb-4" aria-hidden="true">👵🏼🍕</div>
+            <div className="text-5xl sm:text-6xl mb-4" aria-hidden="true" title="Chick's Pizza">🍕</div>
             <h2 className="text-3xl sm:text-4xl font-black text-red-700 mb-6 uppercase">The Best Pizza Game Ever!</h2>
             <div className="text-left space-y-4 mb-8 text-base sm:text-lg font-medium text-gray-700">
-              <p>Welcome to Chick's. The 29-year-old grey-haired legend is in the back.</p>
+              <p>Welcome to Chick's. The legend is in the back — you'll know her when you see her in person.</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>She's closed 9 months of the year.</li>
                 <li>Open 4 days a week. 4 PM to 8 PM <span className="underline font-bold">ONLY</span>.</li>
                 <li>We sell Wing Sauce with Pizza. <span className="text-red-600 font-bold uppercase">NO WINGS ON THE MENU. PIZZA ONLY.</span></li>
+                <li>We Deliver, but you gotta tip us well!</li>
                 <li>When the dough runs out, the phone gets unplugged.</li>
               </ul>
-              <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Don't Hesitate !  Call before the cord gets pulled !</p>
+              <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Don't Hesitate! Call before the cord gets pulled — pickup, delivery (tip well!), or come see her in person.</p>
             </div>
             <button
               type="button"
@@ -360,7 +361,7 @@ export default function App() {
             
             {/* Chick's Commentary Box */}
             <div className="w-full bg-blue-50 border-l-8 border-blue-500 p-4 mb-8 rounded-r-xl shadow-sm flex items-start gap-4">
-              <div className="text-4xl bg-white p-2 rounded-full shadow-sm border border-blue-100" aria-hidden="true">👵🏼</div>
+              <div className="text-4xl bg-white p-2 rounded-full shadow-sm border border-blue-100" aria-hidden="true" title="Chick's Pizza">🍕</div>
               <div>
                 <h4 className="font-bold text-blue-900 mb-1 text-sm uppercase tracking-wide" id="chick-commentary-label">Chick Yells:</h4>
                 <p
@@ -708,7 +709,9 @@ export default function App() {
       
       {/* Footer */}
       <footer className="text-center p-4 text-xs sm:text-sm text-orange-800 font-medium opacity-80 z-10 mb-16 sm:mb-8 px-4">
-        <p>THE BEST Pie you'll ever try. All thanks to Chick.</p>
+        <p>THE BEST pie you'll ever try — best tasted in person. All thanks to Chick.</p>
+        <p className="mt-1 font-bold text-red-800">We Deliver, but you gotta tip us well!</p>
+        <p className="mt-1 opacity-90">1608 Ford St · Ogdensburg, NY · (315) 393-7700 · Pizza + wing sauce · No wings</p>
       </footer>
 
       {/* C4 Discrete & Romantic Button */}
