@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Pizza, PhoneOff, Flame, Clock, Trophy, AlertTriangle, ChefHat, MapPin, Phone, Palette } from 'lucide-react';
+import { Pizza, PhoneOff, Flame, Clock, Trophy, AlertTriangle, ChefHat, MapPin, Phone, Palette, Music2, Music } from 'lucide-react';
+import OpenWindowStrip from './OpenWindowStrip.jsx';
+import PilgrimageFinder from './PilgrimageFinder.jsx';
+import ShareActions from './ShareActions.jsx';
+import { createJukebox } from './themeSong.js';
 
 const TOTAL_INGREDIENTS = 10;
 
@@ -9,7 +13,10 @@ export default function App() {
   const [pizzasServed, setPizzasServed] = useState(0);
   const [theme, setTheme] = useState('american');
   const [showC4Modal, setShowC4Modal] = useState(false);
-  
+  const [jukeboxOn, setJukeboxOn] = useState(false);
+  const [jukeboxNote, setJukeboxNote] = useState('');
+  const [pilgrimFrom, setPilgrimFrom] = useState(null);
+
   // Game Phase States: 'pounding', 'topping', 'launching', 'baking', 'served'
   const [phase, setPhase] = useState('pounding');
   const [message, setMessage] = useState('');
@@ -30,6 +37,46 @@ export default function App() {
   // Refs for C4 modal focus management
   const c4TriggerRef = useRef(null);
   const c4CloseRef = useRef(null);
+  const jukeboxRef = useRef(null);
+
+  // Rolling-pin cursor + jukebox lifecycle (mute-first; no autoplay)
+  useEffect(() => {
+    document.documentElement.classList.add('chicks-rolling-pin');
+    jukeboxRef.current = createJukebox();
+
+    const onVis = () => {
+      if (document.hidden) {
+        jukeboxRef.current?.stop();
+        setJukeboxOn(false);
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+
+    return () => {
+      document.documentElement.classList.remove('chicks-rolling-pin');
+      document.removeEventListener('visibilitychange', onVis);
+      jukeboxRef.current?.dispose();
+      jukeboxRef.current = null;
+    };
+  }, []);
+
+  const toggleJukebox = async () => {
+    const box = jukeboxRef.current;
+    if (!box) return;
+    if (box.prefersQuiet()) {
+      setJukeboxNote('Reduced-motion is on — jukebox stays unplugged.');
+      setJukeboxOn(false);
+      return;
+    }
+    try {
+      const on = await box.toggle();
+      setJukeboxOn(on);
+      setJukeboxNote(on ? 'Jukebox ON: When the Cord Gets Pulled' : 'Jukebox unplugged.');
+    } catch {
+      setJukeboxNote('Browser blocked the jukebox. Try again after a click.');
+      setJukeboxOn(false);
+    }
+  };
 
   // Close C4 modal on Escape; move focus in when opening, restore when closing
   useEffect(() => {
@@ -161,7 +208,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen font-sans overflow-hidden flex flex-col pb-10 relative ${theme === 'italian' ? 'bg-slate-900 text-gray-100' : 'bg-orange-50 text-gray-900'}`}>
+    <div className={`min-h-screen font-sans overflow-x-hidden overflow-y-auto flex flex-col pb-10 relative ${theme === 'italian' ? 'bg-slate-900 text-gray-100' : 'bg-orange-50 text-gray-900'}`}>
       {theme === 'italian' && (
         <style>{`
           main .bg-white { background-color: #1e293b !important; color: #f8fafc !important; border-color: #16a34a !important; }
@@ -171,6 +218,8 @@ export default function App() {
           main .text-blue-900 { color: #f8fafc !important; }
         `}</style>
       )}
+
+      <OpenWindowStrip theme={theme} />
 
       {/* Action Overlays for Transitions */}
       {flyingToppings && (
@@ -247,7 +296,18 @@ export default function App() {
           <h1 className="text-2xl font-black tracking-wider uppercase drop-shadow-md">Chick's Pizza</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button
+            type="button"
+            onClick={toggleJukebox}
+            aria-pressed={jukeboxOn}
+            aria-label={jukeboxOn ? 'Unplug the jukebox' : 'Plug in the jukebox theme song'}
+            title="When the Cord Gets Pulled — starts muted"
+            className="bg-black/30 hover:bg-black/50 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors min-h-[32px]"
+          >
+            {jukeboxOn ? <Music2 className="w-4 h-4 animate-pulse" aria-hidden="true" /> : <Music className="w-4 h-4" aria-hidden="true" />}
+            <span className="hidden sm:inline" aria-hidden="true">{jukeboxOn ? 'Jukebox ON' : 'Jukebox'}</span>
+          </button>
           <button
             type="button"
             onClick={() => setTheme(t => t === 'american' ? 'italian' : 'american')}
@@ -295,8 +355,11 @@ export default function App() {
           <div className="max-w-2xl bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 text-center relative z-10 transform hover:scale-105 transition-transform duration-500 mx-2">
             <div className="text-5xl sm:text-6xl mb-4" aria-hidden="true" title="Chick's Pizza">🍕</div>
             <h2 className="text-3xl sm:text-4xl font-black text-red-700 mb-6 uppercase">The Best Pizza Game Ever!</h2>
-            <div className="text-left space-y-4 mb-8 text-base sm:text-lg font-medium text-gray-700">
+            <div className="text-left space-y-4 mb-6 text-base sm:text-lg font-medium text-gray-700">
               <p>Welcome to Chick's. The legend is in the back — you'll know her when you see her in person.</p>
+              <p className="font-bold text-red-800 text-center text-base sm:text-lg">
+                Everyone's got to try Chick's at least once in their lifetime.
+              </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>She's closed 9 months of the year.</li>
                 <li>Open 4 days a week. 4 PM to 8 PM <span className="underline font-bold">ONLY</span>.</li>
@@ -304,12 +367,19 @@ export default function App() {
                 <li>We Deliver, but you gotta tip us well!</li>
                 <li>When the dough runs out, the phone gets unplugged.</li>
               </ul>
-              <p className="italic text-gray-500 pt-4 text-center text-sm sm:text-base">Don't Hesitate! Call before the cord gets pulled — pickup, delivery (tip well!), or come see her in person.</p>
+              <p className="italic text-gray-500 pt-2 text-center text-sm sm:text-base">Don't Hesitate! Call before the cord gets pulled — pickup, delivery (tip well!), or come see her in person.</p>
             </div>
+            <PilgrimageFinder
+              theme={theme}
+              onResult={(r) => setPilgrimFrom(r ? r.label : null)}
+            />
+            {jukeboxNote && (
+              <p className="mt-3 text-xs text-gray-500 font-medium" role="status">{jukeboxNote}</p>
+            )}
             <button
               type="button"
               onClick={attemptToEnter}
-              className="bg-green-700 hover:bg-green-600 text-white font-black text-xl sm:text-2xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_6px_0_rgb(22,101,52)] hover:shadow-[0_2px_0_rgb(22,101,52)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="mt-6 bg-green-700 hover:bg-green-600 text-white font-black text-xl sm:text-2xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_6px_0_rgb(22,101,52)] hover:shadow-[0_2px_0_rgb(22,101,52)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               ATTEMPT TO ENTER
             </button>
@@ -321,11 +391,17 @@ export default function App() {
           <div className="max-w-md bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-red-600 text-center relative z-10 mx-2">
             <Clock className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-red-600 mb-4" aria-hidden="true" />
             <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">LOCKED OUT!</h2>
-            <p className="text-lg sm:text-xl text-gray-800 mb-8" role="status" aria-live="polite">{message}</p>
+            <p className="text-lg sm:text-xl text-gray-800 mb-4" role="status" aria-live="polite">{message}</p>
+            <ShareActions
+              kind="locked"
+              headline="LOCKED OUT!"
+              subline={message}
+              fromLabel={pilgrimFrom}
+            />
             <button
               type="button"
               onClick={attemptToEnter}
-              className="bg-blue-700 hover:bg-blue-600 text-white font-bold text-lg sm:text-xl py-3 px-6 sm:px-8 rounded-full shadow-[0_4px_0_rgb(30,58,138)] hover:shadow-[0_2px_0_rgb(30,58,138)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="mt-4 bg-blue-700 hover:bg-blue-600 text-white font-bold text-lg sm:text-xl py-3 px-6 sm:px-8 rounded-full shadow-[0_4px_0_rgb(30,58,138)] hover:shadow-[0_2px_0_rgb(30,58,138)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               Lurk outside & try again
             </button>
@@ -340,15 +416,24 @@ export default function App() {
             <p className="text-xl sm:text-2xl mb-2">Chick ran out of ingredients.</p>
             <p className="text-base sm:text-lg text-gray-300 mb-8">Shift is over. Go home.</p>
 
-            <div className="bg-gray-800 rounded-xl p-6 mb-8 border-2 border-dashed border-gray-600" role="status" aria-label={`Final score: ${pizzasServed} masterpieces created`}>
+            <div className="bg-gray-800 rounded-xl p-6 mb-4 border-2 border-dashed border-gray-600" role="status" aria-label={`Final score: ${pizzasServed} masterpieces created`}>
               <h3 className="text-yellow-300 font-bold text-lg sm:text-xl mb-2">Final Score</h3>
               <p className="text-4xl sm:text-5xl font-black">{pizzasServed} <span className="text-base sm:text-lg text-gray-200 block sm:inline mt-2 sm:mt-0">Masterpieces Created</span></p>
             </div>
 
+            <ShareActions
+              kind="unplugged"
+              headline="PHONE UNPLUGGED"
+              subline={`Chick ran out of dough after ${pizzasServed} masterpiece${pizzasServed === 1 ? '' : 's'}. Best pizza game ever — now drive to Ogdensburg.`}
+              score={pizzasServed}
+              fromLabel={pilgrimFrom}
+              dark
+            />
+
             <button
               type="button"
               onClick={restartGame}
-              className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_4px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 transition-all w-full sm:w-auto"
+              className="mt-6 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-lg sm:text-xl py-3 sm:py-4 px-6 sm:px-10 rounded-full shadow-[0_4px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 transition-all w-full sm:w-auto"
             >
               Wait 9 Months to Play Again
             </button>
@@ -690,12 +775,20 @@ export default function App() {
                 </div>
 
                 <h3 className="text-4xl font-black text-green-700 mb-2 uppercase tracking-wider">WALLAH!</h3>
-                <p className="text-xl text-gray-800 mb-8 font-bold">The absolute best pizza ever created — cut square, the way Chick does it.</p>
+                <p className="text-xl text-gray-800 mb-4 font-bold">The absolute best pizza ever created — cut square, the way Chick does it.</p>
+
+                <ShareActions
+                  kind="masterpiece"
+                  headline="WALLAH!"
+                  subline="Square-cut masterpiece. Wing sauce. No wings. The real pie is in Ogdensburg."
+                  score={pizzasServed}
+                  fromLabel={pilgrimFrom}
+                />
 
                 <button
                   type="button"
                   onClick={handleNextPizza}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-black font-black text-2xl py-4 px-12 rounded-full shadow-[0_6px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all"
+                  className="mt-6 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-2xl py-4 px-12 rounded-full shadow-[0_6px_0_rgb(161,98,7)] hover:shadow-[0_2px_0_rgb(161,98,7)] hover:translate-y-1 active:translate-y-2 active:shadow-none transition-all"
                 >
                   NEXT ORDER
                 </button>
@@ -712,6 +805,7 @@ export default function App() {
         <p>THE BEST pie you'll ever try — best tasted in person. All thanks to Chick.</p>
         <p className="mt-1 font-bold text-red-800">We Deliver, but you gotta tip us well!</p>
         <p className="mt-1 opacity-90">1608 Ford St · Ogdensburg, NY · (315) 393-7700 · Pizza + wing sauce · No wings</p>
+        <p className="mt-2 text-[11px] sm:text-xs opacity-70">Cursor = rolling pin. Jukebox starts unplugged (header). Game is free. Pie is the pilgrimage.</p>
       </footer>
 
       {/* C4 Discrete & Romantic Button */}
