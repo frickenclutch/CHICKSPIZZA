@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Pizza, PhoneOff, Flame, Clock, Trophy, AlertTriangle, ChefHat, MapPin, Phone, Palette } from 'lucide-react';
-import OpenWindowStrip from './OpenWindowStrip.jsx';
 import PilgrimageFinder from './PilgrimageFinder.jsx';
 import ShareActions from './ShareActions.jsx';
 import JukeboxRecord from './JukeboxRecord.jsx';
@@ -223,8 +222,6 @@ export default function App() {
           main .text-blue-900 { color: #f8fafc !important; }
         `}</style>
       )}
-
-      <OpenWindowStrip theme={theme} />
 
       {/* Action Overlays for Transitions */}
       {flyingToppings && (
