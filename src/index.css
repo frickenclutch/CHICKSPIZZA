@@ -31,8 +31,8 @@ html.chicks-rolling-pin [tabindex]:not([tabindex='-1']) {
   }
 }
 
-/* Vinyl jukebox — spin only while playing */
-@keyframes chicks-vinyl-spin {
+/* Pizza pan jukebox — spin + assemble while playing */
+@keyframes chicks-pan-spin {
   from {
     transform: rotate(0deg);
   }
@@ -41,13 +41,155 @@ html.chicks-rolling-pin [tabindex]:not([tabindex='-1']) {
   }
 }
 
-.chicks-vinyl-disc {
+/* Layer build: 0–100% of one assemble cycle (~7.5s), loops with the spin vibe */
+@keyframes chicks-sauce-build {
+  0%,
+  8% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  18%,
+  88% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  96%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.92);
+  }
+}
+
+@keyframes chicks-cheese-build {
+  0%,
+  20% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  32%,
+  88% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes chicks-topping-drop {
+  0%,
+  28% {
+    opacity: 0;
+    transform: scale(0) translateY(-4px);
+  }
+  38%,
+  86% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes chicks-cut-appear {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  65%,
+  88% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chicks-shine-pulse {
+  0%,
+  50% {
+    opacity: 0.15;
+  }
+  70%,
+  85% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+.chicks-pizza-pan {
   transform-origin: center center;
   will-change: transform;
 }
 
-.chicks-vinyl-disc.is-spinning {
-  animation: chicks-vinyl-spin 2.75s linear infinite;
+.chicks-pizza-pan.is-spinning {
+  animation: chicks-pan-spin 3.2s linear infinite;
+}
+
+/* Idle: bare dough only — pan ready, no toppings yet */
+.chicks-pie-stage.is-idle .chicks-pie-sauce,
+.chicks-pie-stage.is-idle .chicks-pie-cheese,
+.chicks-pie-stage.is-idle .chicks-pie-topping,
+.chicks-pie-stage.is-idle .chicks-pie-cut,
+.chicks-pie-stage.is-idle .chicks-pie-shine {
+  opacity: 0 !important;
+  transform: scale(0.7);
+}
+
+.chicks-pie-stage.is-idle .chicks-pie-crust {
+  opacity: 0.85;
+}
+
+/* Playing: assemble on a looping cycle */
+.chicks-pie-stage.is-assembling .chicks-pie-sauce {
+  animation: chicks-sauce-build 7.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.chicks-pie-stage.is-assembling .chicks-pie-cheese {
+  animation: chicks-cheese-build 7.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.chicks-pie-stage.is-assembling .chicks-pep-1 {
+  animation: chicks-topping-drop 7.5s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.chicks-pie-stage.is-assembling .chicks-pep-2 {
+  animation: chicks-topping-drop 7.5s ease-in-out infinite;
+  animation-delay: 0.12s;
+}
+.chicks-pie-stage.is-assembling .chicks-pep-3 {
+  animation: chicks-topping-drop 7.5s ease-in-out infinite;
+  animation-delay: 0.22s;
+}
+.chicks-pie-stage.is-assembling .chicks-pep-4 {
+  animation: chicks-topping-drop 7.5s ease-in-out infinite;
+  animation-delay: 0.32s;
+}
+.chicks-pie-stage.is-assembling .chicks-pep-5 {
+  animation: chicks-topping-drop 7.5s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+.chicks-pie-stage.is-assembling .chicks-veg {
+  animation: chicks-topping-drop 7.5s ease-in-out 0.45s infinite;
+}
+.chicks-pie-stage.is-assembling .chicks-olive {
+  animation: chicks-topping-drop 7.5s ease-in-out 0.55s infinite;
+}
+.chicks-pie-stage.is-assembling .chicks-pie-cut {
+  animation: chicks-cut-appear 7.5s ease-in-out infinite;
+}
+.chicks-pie-stage.is-assembling .chicks-pie-shine {
+  animation: chicks-shine-pulse 7.5s ease-in-out infinite;
 }
 
 body {
@@ -101,7 +243,27 @@ body {
     scroll-behavior: auto !important;
   }
 
-  .chicks-vinyl-disc.is-spinning {
+  .chicks-pizza-pan.is-spinning,
+  .chicks-pie-stage.is-assembling .chicks-pie-sauce,
+  .chicks-pie-stage.is-assembling .chicks-pie-cheese,
+  .chicks-pie-stage.is-assembling .chicks-pie-topping,
+  .chicks-pie-stage.is-assembling .chicks-pep-1,
+  .chicks-pie-stage.is-assembling .chicks-pep-2,
+  .chicks-pie-stage.is-assembling .chicks-pep-3,
+  .chicks-pie-stage.is-assembling .chicks-pep-4,
+  .chicks-pie-stage.is-assembling .chicks-pep-5,
+  .chicks-pie-stage.is-assembling .chicks-veg,
+  .chicks-pie-stage.is-assembling .chicks-olive,
+  .chicks-pie-stage.is-assembling .chicks-pie-cut,
+  .chicks-pie-stage.is-assembling .chicks-pie-shine {
     animation: none !important;
+  }
+
+  /* Static full pie when reduced-motion but still “playing” visual state */
+  .chicks-pie-stage.is-assembling .chicks-pie-sauce,
+  .chicks-pie-stage.is-assembling .chicks-pie-cheese,
+  .chicks-pie-stage.is-assembling .chicks-pie-topping {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
