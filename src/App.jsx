@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Pizza, PhoneOff, Flame, Clock, Trophy, AlertTriangle, ChefHat, MapPin, Phone, Palette, Music2, Music } from 'lucide-react';
+import { Pizza, PhoneOff, Flame, Clock, Trophy, AlertTriangle, ChefHat, MapPin, Phone, Palette } from 'lucide-react';
 import OpenWindowStrip from './OpenWindowStrip.jsx';
 import PilgrimageFinder from './PilgrimageFinder.jsx';
 import ShareActions from './ShareActions.jsx';
-import { createJukebox } from './themeSong.js';
+import JukeboxRecord from './JukeboxRecord.jsx';
+import { createJukebox, THEME_TRACK } from './themeSong.js';
 
 const TOTAL_INGREDIENTS = 10;
 
@@ -71,7 +72,11 @@ export default function App() {
     try {
       const on = await box.toggle();
       setJukeboxOn(on);
-      setJukeboxNote(on ? 'Jukebox ON: When the Cord Gets Pulled' : 'Jukebox unplugged.');
+      setJukeboxNote(
+        on
+          ? `Jukebox ON: ${box.trackTitle || 'Sauce on the Side'}`
+          : 'Jukebox unplugged.'
+      );
     } catch {
       setJukeboxNote('Browser blocked the jukebox. Try again after a click.');
       setJukeboxOn(false);
@@ -297,17 +302,11 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <button
-            type="button"
-            onClick={toggleJukebox}
-            aria-pressed={jukeboxOn}
-            aria-label={jukeboxOn ? 'Unplug the jukebox' : 'Plug in the jukebox theme song'}
-            title="When the Cord Gets Pulled — starts muted"
-            className="bg-black/30 hover:bg-black/50 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors min-h-[32px]"
-          >
-            {jukeboxOn ? <Music2 className="w-4 h-4 animate-pulse" aria-hidden="true" /> : <Music className="w-4 h-4" aria-hidden="true" />}
-            <span className="hidden sm:inline" aria-hidden="true">{jukeboxOn ? 'Jukebox ON' : 'Jukebox'}</span>
-          </button>
+          <JukeboxRecord
+            playing={jukeboxOn}
+            onToggle={toggleJukebox}
+            trackTitle={THEME_TRACK.title}
+          />
           <button
             type="button"
             onClick={() => setTheme(t => t === 'american' ? 'italian' : 'american')}
