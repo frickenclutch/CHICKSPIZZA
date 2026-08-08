@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postal:build": "node tools/build-postal-data.mjs --full CA"
   },
   "dependencies": {
     "lucide-react": "latest",

@@ -3,5 +3,9 @@
 # so Cloudflare cannot cache index.html under /assets/*.css (immutable).
 /assets/*  /404.html  404
 
+# Postal atlas chunks: a missing chunk must 404 (the client probes chunk
+# paths that may not exist), never serve cached HTML as JSON.
+/postal/*  /404.html  404
+
 # SPA client routes
 /*    /index.html    200
