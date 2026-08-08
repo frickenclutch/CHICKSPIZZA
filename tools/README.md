@@ -18,6 +18,14 @@ Downloads are cached in `tools/.cache/` (not committed). The generated
 `public/postal/` **is committed**, so Cloudflare Pages builds never depend on
 geonames.org being up.
 
+## Automated refresh
+
+`.github/workflows/refresh-postal-atlas.yml` re-runs the scraper (with
+`--force`) on the 1st of Jan/Apr/Jul/Oct and pushes a commit only when the
+dataset actually changed — which auto-deploys via Cloudflare Pages. Run it
+on demand from the repo's Actions tab ("Refresh postal atlas" → Run workflow),
+or adjust the `cron:` line to change the cadence.
+
 ## Output format
 
 - `public/postal/manifest.json` — `{ countries: { CC: { name, count, split, sample } } }`

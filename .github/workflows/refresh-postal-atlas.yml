@@ -1,0 +1,47 @@
+name: Refresh postal atlas
+
+# Re-scrapes the GeoNames postal dumps and commits the regenerated
+# public/postal/ dataset when anything changed. A push to main auto-deploys
+# through Cloudflare Pages like any other commit.
+
+on:
+  schedule:
+    # Quarterly: Jan / Apr / Jul / Oct 1st at 06:17 UTC.
+    # (Off-peak minute on purpose — GitHub delays top-of-the-hour crons.)
+    - cron: '17 6 1 1,4,7,10 *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-postal-atlas
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The tool has zero npm dependencies — no install step needed.
+      - name: Rebuild postal dataset from fresh GeoNames dumps
+        run: node tools/build-postal-data.mjs --full CA --force
+
+      - name: Commit and push if the data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/postal
+          if git diff --cached --quiet; then
+            echo "Postal data unchanged — nothing to deploy."
+          else
+            git commit -m "Refresh postal atlas from GeoNames ($(date -u +%Y-%m-%d), scheduled)"
+            git push
+            echo "Pushed — Cloudflare Pages will auto-deploy."
+          fi
