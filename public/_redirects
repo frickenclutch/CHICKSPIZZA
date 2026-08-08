@@ -1,3 +1,9 @@
+# Host canonicalization: 301 www + the production pages.dev alias to the apex.
+# (If absolute-URL sources are unsupported these lines are skipped harmlessly —
+# the inline <head> script in index.html covers real visitors either way.)
+https://www.chickspizza.com/* https://chickspizza.com/:splat 301
+https://chickspizza.pages.dev/* https://chickspizza.com/:splat 301
+
 # Never soft-fall-back asset paths to the SPA shell.
 # If a hashed file is briefly missing, return 404 instead of HTML —
 # so Cloudflare cannot cache index.html under /assets/*.css (immutable).

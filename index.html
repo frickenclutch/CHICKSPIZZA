@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Canonical host: bounce www + the production pages.dev alias to the
+         apex so every visitor (and their cache) lives on one hostname.
+         Preview deployments (hash.chickspizza.pages.dev) are left alone. -->
+    <script>
+      (function () {
+        var h = location.hostname;
+        if (h === 'www.chickspizza.com' || h === 'chickspizza.pages.dev') {
+          location.replace('https://chickspizza.com' + location.pathname + location.search + location.hash);
+        }
+      })();
+    </script>
+
     <title>Chick's Pizza — Ogdensburg, NY</title>
     <meta
       name="description"
